@@ -17,9 +17,8 @@ router.get("/", validateJWt, async (req, res) => {
 router.post("/items", validateJWt, async (req, res) => {
   const { productId, quantity } = req.body;
   const userId = req.user._id;
-  const cart = await addItemToCart({ userId, producId, quantity });
-  await cart.save();
+  const cart = await addItemToCart({ userId, productId, quantity });
 
-  return cart;
+  res.status(200).send(cart.data);
 });
 export default router;

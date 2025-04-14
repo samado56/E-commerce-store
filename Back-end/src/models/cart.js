@@ -11,7 +11,7 @@ const cartItemSchema = new Schema({
 const cartSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   item: [cartItemSchema],
-  totalAmount: { type: Number, required: true },
+  totalAmount: { type: Number, required: true, default: 0 },
   status: { type: String, default: "active" },
 });
 
