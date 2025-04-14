@@ -5,6 +5,7 @@ import userRouter from "./routers/users.js";
 import cors from "cors";
 import { seedProduct } from "./services/productServeice.js";
 import productRouter from "./routers/products.js";
+import cartRouter from "./routers/cart.js";
 const app = express();
 
 const port = 5000;
@@ -27,6 +28,7 @@ app.use("/students", studentRouter);
 
 app.use("/user", userRouter);
 app.use("/products", productRouter);
+app.use("/cart", cartRouter);
 
 app.listen(port, () => {
   console.log(`listenning or port ${port}`);
