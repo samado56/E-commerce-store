@@ -4,6 +4,7 @@ import {
   addItemToCart,
   getActiveCartForUser,
 } from "../services/cartService.js";
+import { updateItems } from "../services/cartService.js";
 
 const router = express.Router();
 
@@ -21,4 +22,13 @@ router.post("/items", validateJWt, async (req, res) => {
 
   res.status(200).send(cart.data);
 });
+
+router.put("/items", validateJWt, async (req, res) => {
+  const userId = req.user._id;
+  const { productId, quantity } = req.body;
+
+  const updatCart = await updateItems({ userId, productId, quantity });
+  res.status(updatCart.statusCode).send(updatCart.data);
+});
+
 export default router;
