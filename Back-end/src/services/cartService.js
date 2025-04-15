@@ -75,18 +75,63 @@ export const updateItems = async ({ userId, productId, quantity }) => {
     (p) => p.product.toString() !== productId
   );
 
-  let total = totalitems.reduce((sum, product) => {
-    sum += product.quantity * product.unitPrice;
-    return sum;
-  }, 0);
+  //calcult total item utility
+  let total = calculatTotalItems({ cart, productId });
 
   existsInCart.quantity = quantity;
 
-  total += existsInCart.quantity * existsInCart.unitPrice;
+  // total += existsInCart.quantity * existsInCart.unitPrice;
 
   cart.totalAmount = total;
 
   const updatedCart = await cart.save();
 
   return { data: updatedCart, statusCode: 201 };
+};
+
+export const deleteItemFromCart = async ({ userId, id }) => {
+  const cart = await getActiveCartForUser({ userId });
+
+  console.log(cart);
+
+  //does the item exist in cart?
+  const existsInCart = cart.item.find((p) => p.product.toString() === id);
+
+  console.log(existsInCart);
+  if (!existsInCart) {
+    return { data: "Item does not  exists in cart!", statusCode: 400 };
+  }
+
+  const newCart = cart.item.filter((p) => p.product.toString() !== id);
+
+  //calcult total item utility
+  const total = calculatTotalItems({ cart, id });
+
+  cart.totalAmount = total;
+
+  cart.item = newCart;
+
+  const updatedCart = await cart.save();
+
+  return { data: updatedCart, statusCode: 201 };
+};
+
+const calculatTotalItems = ({ cart }) => {
+  let total = cart.item.reduce((sum, product) => {
+    sum += product.quantity * product.unitPrice;
+    return sum;
+  }, 0);
+
+  return total;
+};
+
+//clear cart
+
+export const clearCart = async ({ userId }) => {
+  const cart = await getActiveCartForUser({ userId });
+  cart.item = [];
+  cart.totalAmount = 0;
+
+  const clearedCart = await cart.save();
+  return { data: clearedCart, statusCode: 200 };
 };
