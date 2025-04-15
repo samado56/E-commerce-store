@@ -4,7 +4,7 @@ dotenv.config();
 
 import express from "express";
 import mongosse from "mongoose";
-import studentRouter from "./routers/students.js";
+
 import userRouter from "./routers/users.js";
 import cors from "cors";
 import { seedProduct } from "./services/productServeice.js";
@@ -28,8 +28,6 @@ mongosse
 
 //seed products
 seedProduct();
-
-app.use("/students", studentRouter);
 
 app.use("/user", userRouter);
 app.use("/products", productRouter);
