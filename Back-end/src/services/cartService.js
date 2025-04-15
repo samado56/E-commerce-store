@@ -187,7 +187,6 @@ export const checkout = async ({ userId, adress }) => {
   }
 
   const cart = await getActiveCartForUser({ userId });
-  console.log("Cart fetched for checkout:", cart);
 
   const orderDetails = [];
 
@@ -205,10 +204,8 @@ export const checkout = async ({ userId, adress }) => {
       unitPrice: item.unitPrice,
     };
 
-    console.log("Adding orderItem:", orderItem);
     orderDetails.push(orderItem);
   }
-  // console.log("order =======:", orderItems);
 
   if (orderDetails.length === 0) {
     return { data: "No valid items in cart!", statusCode: 400 };
@@ -223,8 +220,6 @@ export const checkout = async ({ userId, adress }) => {
 
   cart.status = "completed";
   await cart.save();
-
-  console.log("############ checkout ############", order);
 
   return { data: order, statusCode: 201 };
 };

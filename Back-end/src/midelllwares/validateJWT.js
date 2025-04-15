@@ -16,28 +16,24 @@ const validateJWt = async (req, res, next) => {
     return;
   }
 
-  jwt.verify(
-    token,
-    "nqCveM8kzQ0eQDVQYAn6FMEYYdwn9l6e",
-    async (err, payload) => {
-      if (err) {
-        res.status(403).send("invalid token !");
-        return;
-      }
-
-      if (!payload) {
-        res.status(403).send("invalid token payload !");
-        return;
-      }
-
-      /// fetch user from db pn payload
-
-      const user = await userModel.findOne({ email: payload.email });
-
-      req.user = user;
-      next();
+  jwt.verify(token, process.env.JWT_SECRET, async (err, payload) => {
+    if (err) {
+      res.status(403).send("invalid token !");
+      return;
     }
-  );
+
+    if (!payload) {
+      res.status(403).send("invalid token payload !");
+      return;
+    }
+
+    /// fetch user from db pn payload
+
+    const user = await userModel.findOne({ email: payload.email });
+
+    req.user = user;
+    next();
+  });
 };
 
 export default validateJWt;

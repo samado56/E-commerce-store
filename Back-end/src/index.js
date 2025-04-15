@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+dotenv.config();
+// import("dotenv/config.js");
+
 import express from "express";
 import mongosse from "mongoose";
 import studentRouter from "./routers/students.js";
@@ -6,6 +10,7 @@ import cors from "cors";
 import { seedProduct } from "./services/productServeice.js";
 import productRouter from "./routers/products.js";
 import cartRouter from "./routers/cart.js";
+
 const app = express();
 
 const port = 5000;
@@ -18,7 +23,7 @@ app.use(
 app.use(express.json());
 
 mongosse
-  .connect("mongodb://127.0.0.1:27017/ecommerce")
+  .connect(process.env.DATABASE_URL)
   .then(() => console.log("database has been connected"));
 
 //seed products
