@@ -1,4 +1,5 @@
 import { cartModel } from "../models/cart.js";
+import orderModel from "../models/order.js";
 import productModel from "../models/products.js";
 
 const creatCartForUSer = async ({ userId }) => {
@@ -134,4 +135,96 @@ export const clearCart = async ({ userId }) => {
 
   const clearedCart = await cart.save();
   return { data: clearedCart, statusCode: 200 };
+};
+
+// export const checkout = async ({ userId, adress }) => {
+//   if (!adress) {
+//     return { data: "please provide the adress!", statusCode: 400 };
+//   }
+//   const cart = await getActiveCartForUser({ userId });
+
+//   const orderItems = [];
+
+//   //loop cartItems and create orderItems
+//   for (const item of cart.item) {
+//     const product = await productModel.findById(item.product);
+
+//     if (!product) {
+//       return { data: "product not found !", statusCode: 400 };
+//     }
+
+//     const orderItem = {
+//       productTitle: product.title,
+//       productImage: product.image,
+//       quantity: item.quantity,
+//       unitPrice: item.unitPrice,
+//     };
+
+//     orderItems.push(orderItem);
+//   }
+
+//   const order = await orderModel.create({
+//     orderItems,
+//     total: cart.totalAmount,
+//     adress,
+//     userId,
+//   });
+
+//   await order.save();
+
+//   //update cart status
+
+//   cart.status = "completed";
+
+//   await cart.save();
+
+//   return { data: order, statusCode: 201 };
+// };
+
+export const checkout = async ({ userId, adress }) => {
+  if (!adress) {
+    return { data: "please provide the address!", statusCode: 400 };
+  }
+
+  const cart = await getActiveCartForUser({ userId });
+  console.log("Cart fetched for checkout:", cart);
+
+  const orderDetails = [];
+
+  for (const item of cart.item) {
+    const product = await productModel.findById(item.product);
+    if (!product) {
+      console.log("Product not found:", item.product);
+      continue;
+    }
+
+    const orderItem = {
+      productTitle: product.title,
+      productImage: product.image,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+    };
+
+    console.log("Adding orderItem:", orderItem);
+    orderDetails.push(orderItem);
+  }
+  // console.log("order =======:", orderItems);
+
+  if (orderDetails.length === 0) {
+    return { data: "No valid items in cart!", statusCode: 400 };
+  }
+
+  const order = await orderModel.create({
+    orderItmes: orderDetails,
+    total: cart.totalAmount,
+    adress,
+    userId,
+  });
+
+  cart.status = "completed";
+  await cart.save();
+
+  console.log("############ checkout ############", order);
+
+  return { data: order, statusCode: 201 };
 };
