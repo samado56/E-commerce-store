@@ -26,7 +26,7 @@ const Home = () => {
   };
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [url]);
 
   if (error) {
     return <div>error occured!</div>;

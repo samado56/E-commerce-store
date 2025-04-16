@@ -14,7 +14,7 @@ router.post("/register", async (req, res) => {
     password,
   });
 
-  res.status(statusCode).send(data);
+  res.status(statusCode).json(data);
 });
 
 router.post("/login", async (req, res) => {
@@ -25,7 +25,7 @@ router.post("/login", async (req, res) => {
     password,
   });
 
-  res.status(statusCode).send(data);
+  res.status(statusCode).json(data);
 });
 
 export default router;
