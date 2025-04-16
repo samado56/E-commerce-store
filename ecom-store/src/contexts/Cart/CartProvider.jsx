@@ -5,39 +5,44 @@ import { UseAuth } from "../Auth/AuthCntext";
 const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState();
+  const { error, setError } = useState("");
 
   const { token } = UseAuth();
 
   const addItemToCart = async (productId) => {
     console.log(productId);
-    const url = "http://localhost:000/cart/items";
+    try {
+      const url = "http://localhost:5000/cart/items";
 
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        productId: productId,
-        quantity: "2",
-      }),
-    });
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productId,
+          quantity: 2,
+        }),
+      });
 
-    const items = await res.json();
+      const items = await res.json();
 
-    console.log(res);
-    console.log(items);
+      if (res.ok) {
+        setCartItems([...items.item]);
+        setTotalAmount(items.totalAmount);
+      }
+      console.log(items);
+    } catch (err) {
+      console.log(err);
+      setError(err);
+    }
   };
 
-  //   const logout = () => {
-  //     localStorage.removeItem(USERNAME_KEY);
-  //     localStorage.removeItem(TOKEN_KEY);
-  //     setUsername(null);
-  //     setToken(null);
-  //   };
-
   return (
-    <CartContext.Provider value={{ cartItems, addItemToCart }}>
+    <CartContext.Provider
+      value={{ cartItems, totalAmount, error, addItemToCart }}
+    >
       {children}
     </CartContext.Provider>
   );

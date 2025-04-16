@@ -17,8 +17,8 @@ router.get("/", validateJWt, async (req, res) => {
   try {
     const userId = req.user._id;
     //get active cart for user
-    const cart = await getActiveCartForUser({ userId });
-    res.status(200).json(cart);
+    const cart = await getActiveCartForUser({ userId, pop: true });
+    res.status(200).send(cart);
   } catch (err) {
     res.status(500).send("somthing went wrong !");
   }
@@ -29,7 +29,7 @@ router.post("/items", validateJWt, async (req, res) => {
     const { productId, quantity } = req.body;
     const userId = req.user._id;
     const cart = await addItemToCart({ userId, productId, quantity });
-    res.status(200).send(cart.data);
+    res.status(cart.statusCode).send(cart.data);
   } catch (err) {
     res.status(500).send("something went wrong!");
   }

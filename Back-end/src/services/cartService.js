@@ -9,8 +9,16 @@ const creatCartForUSer = async ({ userId }) => {
   return cart;
 };
 
-export const getActiveCartForUser = async ({ userId }) => {
-  let cart = await cartModel.findOne({ userId, status: "active" });
+export const getActiveCartForUser = async ({ userId, pop }) => {
+  let cart;
+
+  if (pop) {
+    cart = await cartModel
+      .findOne({ userId, status: "active" })
+      .populate("item.product");
+  } else {
+    cart = await cartModel.findOne({ userId, status: "active" });
+  }
 
   if (!cart) {
     cart = await creatCartForUSer({ userId });
@@ -45,9 +53,12 @@ export const addItemToCart = async ({ userId, productId, quantity }) => {
 
   cart.totalAmount += product.price * quantity;
 
-  const updatedCart = await cart.save();
+  await cart.save();
 
-  return { data: updatedCart, statusCode: 201 };
+  return {
+    data: await getActiveCartForUser({ userId, pop: true }),
+    statusCode: 201,
+  };
 };
 
 export const updateItems = async ({ userId, productId, quantity }) => {
