@@ -14,7 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { UseAuth } from "../contexts/Auth/AuthCntext";
 import { useNavigate } from "react-router-dom";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCartOutlined";
+import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import Badge, { badgeClasses } from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
 
@@ -160,18 +160,18 @@ function NavBar() {
               </Button>
             ))}
           </Box>
+          <IconButton onClick={handleCart} sx={{ marginRight: 2 }}>
+            <ShoppingCart fontSize="small" sx={{ color: "white" }} />
+            <CartBadge
+              sx={{ color: "white" }}
+              badgeContent={2}
+              // color="primary"
+              overlap="circular"
+            />
+          </IconButton>
           {isLogedin ? (
             <Box sx={{ flexGrow: 0 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <IconButton onClick={handleCart}>
-                  <ShoppingCartIcon fontSize="small" sx={{ color: "white" }} />
-                  <CartBadge
-                    sx={{ color: "white" }}
-                    badgeContent={2}
-                    // color="primary"
-                    overlap="circular"
-                  />
-                </IconButton>
                 <Typography variant="h6">{username}</Typography>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>

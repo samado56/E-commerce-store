@@ -3,6 +3,8 @@ import NavBar from "./components/NavBar";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Cart from "./pages/Cart";
+import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   return (
     <>
@@ -11,7 +13,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/cart" element={<h1>Cart</h1>} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/cart" element={<Cart />} />
+        </Route>
       </Routes>
     </>
   );

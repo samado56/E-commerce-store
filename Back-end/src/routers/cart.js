@@ -18,7 +18,7 @@ router.get("/", validateJWt, async (req, res) => {
     const userId = req.user._id;
     //get active cart for user
     const cart = await getActiveCartForUser({ userId });
-    res.status(200).send(cart);
+    res.status(200).json(cart);
   } catch (err) {
     res.status(500).send("somthing went wrong !");
   }
