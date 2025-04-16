@@ -22,8 +22,10 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("token", token);
   };
 
+  const isLogedin = !!token;
+
   return (
-    <AuthContext.Provider value={{ username, token, login }}>
+    <AuthContext.Provider value={{ username, token, login, isLogedin }}>
       {children}
     </AuthContext.Provider>
   );
