@@ -18,7 +18,7 @@ export default function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("ss@ss.cc");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -102,6 +102,7 @@ export default function Login() {
             id="outlined-read-only-input"
             label="Email "
             type="Email"
+            defaultValue="ss@ss.cc"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />

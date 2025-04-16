@@ -6,8 +6,10 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardActions from "@mui/material/CardActions";
+import { useCart } from "../contexts/Cart/CartContext";
 
-export default function ProductCard({ image, title, price }) {
+export default function ProductCard({ _id, image, title, price }) {
+  const { addItemToCart } = useCart();
   return (
     <Card sx={{ maxHeight: "400px" }}>
       <CardActionArea>
@@ -28,7 +30,12 @@ export default function ProductCard({ image, title, price }) {
         </CardContent>
       </CardActionArea>
       <CardActions sx={{ textAlign: "center" }}>
-        <Button variant="contained" size="small" color="primary">
+        <Button
+          variant="contained"
+          size="small"
+          color="primary"
+          onClick={() => addItemToCart(_id)}
+        >
           Add to Cart
         </Button>
       </CardActions>
