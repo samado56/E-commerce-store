@@ -11,6 +11,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import { Button } from "@mui/material";
 import { useState } from "react";
+import { UseAuth } from "../contexts/Auth/AuthCntext";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +20,8 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  const { login } = UseAuth();
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -31,6 +34,11 @@ export default function Register() {
   };
 
   const handleRegister = async () => {
+    if (!FirstName || !LastName || !email || !password) {
+      setError("missing information!");
+      return;
+    }
+
     const url = `http://localhost:5000/user/register`;
 
     const res = await fetch(url, {
@@ -49,9 +57,16 @@ export default function Register() {
     if (!res.ok) {
       setError("somthing went wrong!");
     }
-    const data = await res.json();
-    console.log(data);
+    const token = await res.json();
+
+    if (!token) {
+      setError("incorect Token!");
+    }
+
+    login(token, email);
+    console.log(token);
   };
+
   return (
     <Container>
       <Box
