@@ -14,6 +14,9 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { UseAuth } from "../contexts/Auth/AuthCntext";
 import { useNavigate } from "react-router-dom";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCartOutlined";
+import Badge, { badgeClasses } from "@mui/material/Badge";
+import { styled } from "@mui/material/styles";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -22,7 +25,16 @@ function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
-  const { username, isLogedin } = UseAuth();
+  const CartBadge = styled(Badge)`
+    & .${badgeClasses.badge} {
+      top: -12px;
+      right: -6px;
+
+      background: red;
+    }
+  `;
+
+  const { username, isLogedin, logout } = UseAuth();
   const navigate = useNavigate();
 
   console.log("from navbar", { username, isLogedin });
@@ -44,6 +56,19 @@ function NavBar() {
 
   const handleLogin = () => {
     navigate("/login");
+  };
+
+  const handleLogout = (setting) => {
+    if (setting !== "Logout") {
+      return;
+    }
+
+    logout();
+    navigate("/login");
+  };
+
+  const handleCart = () => {
+    navigate("/cart");
   };
 
   return (
@@ -138,6 +163,15 @@ function NavBar() {
           {isLogedin ? (
             <Box sx={{ flexGrow: 0 }}>
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                <IconButton onClick={handleCart}>
+                  <ShoppingCartIcon fontSize="small" sx={{ color: "white" }} />
+                  <CartBadge
+                    sx={{ color: "white" }}
+                    badgeContent={2}
+                    // color="primary"
+                    overlap="circular"
+                  />
+                </IconButton>
                 <Typography variant="h6">{username}</Typography>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -166,9 +200,27 @@ function NavBar() {
               >
                 {settings.map((setting) => (
                   <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography sx={{ textAlign: "center" }}>
+                    <Button
+                      variant="text"
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "transparent",
+
+                          color: "inherit",
+                          boxShadow: "none",
+                        },
+                        "&:focus": {
+                          outline: "none",
+                          backgroundColor: "transparent",
+                          color: "transparent",
+                        },
+                      }}
+                      onClick={() => {
+                        handleLogout(setting);
+                      }}
+                    >
                       {setting}
-                    </Typography>
+                    </Button>
                   </MenuItem>
                 ))}
               </Menu>
