@@ -124,6 +124,30 @@ const CartProvider = ({ children }) => {
       setError("Failed to delete item");
     }
   };
+
+  //clear all cart
+  const clearCart = async () => {
+    try {
+      const url = `http://localhost:5000/cart/`;
+
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const deleteItem = await res.json();
+
+      if (res.ok) {
+        setCartItems([...deleteItem.item]);
+        setTotalAmount(deleteItem.totalAmount);
+      }
+    } catch (err) {
+      console.log(err);
+      setError("Failed to delete item");
+    }
+  };
   return (
     <CartContext.Provider
       value={{
@@ -134,6 +158,7 @@ const CartProvider = ({ children }) => {
         addItemToCart,
         updateItemInCart,
         deleteItemFromCart,
+        clearCart,
       }}
     >
       {children}

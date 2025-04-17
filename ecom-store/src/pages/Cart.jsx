@@ -21,6 +21,7 @@ export default function Cart() {
     totalAmount,
     updateItemInCart,
     deleteItemFromCart,
+    clearCart,
   } = useCart();
   console.log("######## totalAmount ########", totalAmount);
 
@@ -35,17 +36,28 @@ export default function Cart() {
     deleteItemFromCart(productId);
   };
 
+  const handleClearCart = () => {
+    clearCart();
+  };
+
   if (loader) {
     return <h1>Loading...</h1>;
   }
   return (
     <>
-      <Typography
-        variant="h4"
-        sx={{ alignSelf: "center", justifySelf: "center", mt: 2 }}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+
+          mx: 6,
+          p: 4,
+        }}
       >
-        My Cart
-      </Typography>
+        <Typography variant="h4">My Cart</Typography>
+        <Button onClick={handleClearCart}>Clear Cart</Button>
+      </Box>
       <List
         sx={{
           width: "100%",
