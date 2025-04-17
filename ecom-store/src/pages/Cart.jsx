@@ -24,14 +24,11 @@ export default function Cart() {
   } = useCart();
   console.log("######## totalAmount ########", totalAmount);
 
-  const handleMinus = (productId, quantity) => {
-    const minus = quantity - 1;
-    updateItemInCart(productId, minus);
-  };
-
-  const handlePlus = (productId, quantity) => {
-    const plus = quantity + 1;
-    updateItemInCart(productId, plus);
+  const handleQuantity = (productId, quantity) => {
+    if (quantity <= 0) {
+      return;
+    }
+    updateItemInCart(productId, quantity);
   };
 
   const handleDeleteItem = (productId) => {
@@ -108,7 +105,7 @@ export default function Cart() {
                           display: "inline",
                         }}
                       >
-                        {item.unitPrice}$
+                        {item.unitPrice * item.quantity}$
                       </Typography>
                     </Box>
                     <Box sx={{ width: "20%" }}>
@@ -118,7 +115,7 @@ export default function Cart() {
                       >
                         <Button
                           onClick={() =>
-                            handleMinus(item.product._id, item.quantity)
+                            handleQuantity(item.product._id, item.quantity - 1)
                           }
                         >
                           -
@@ -138,7 +135,7 @@ export default function Cart() {
 
                         <Button
                           onClick={() =>
-                            handlePlus(item.product._id, item.quantity)
+                            handleQuantity(item.product._id, item.quantity + 1)
                           }
                         >
                           +

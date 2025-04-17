@@ -109,7 +109,6 @@ const CartProvider = ({ children }) => {
       const res = await fetch(url, {
         method: "DELETE",
         headers: {
-          "Content-Type": "Application/json",
           Authorization: `Bearer ${token}`,
         },
       });

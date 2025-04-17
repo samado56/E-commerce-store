@@ -107,12 +107,12 @@ export const updateItems = async ({ userId, productId, quantity }) => {
     (p) => p.product.toString() !== productId
   );
 
+  existsInCart.quantity = quantity;
+
   //calcult total item utility
   let total = calculatTotalItems({ cart, productId });
 
-  existsInCart.quantity = quantity;
-
-  // total += existsInCart.quantity * existsInCart.unitPrice;
+  // total = existsInCart.quantity * existsInCart.unitPrice;
 
   cart.totalAmount = total;
 
@@ -127,12 +127,9 @@ export const updateItems = async ({ userId, productId, quantity }) => {
 export const deleteItemFromCart = async ({ userId, id }) => {
   const cart = await getActiveCartForUser({ userId });
 
-  console.log(cart);
-
   //does the item exist in cart?
   const existsInCart = cart.item.find((p) => p.product.toString() === id);
 
-  console.log(existsInCart);
   if (!existsInCart) {
     return { data: "Item does not  exists in cart!", statusCode: 400 };
   }
@@ -142,58 +139,19 @@ export const deleteItemFromCart = async ({ userId, id }) => {
   //calcult total item utility
   const total = calculatTotalItems({ cart, id });
 
-  cart.totalAmount = total;
+  cart.totalAmount = total - existsInCart.unitPrice * existsInCart.quantity;
 
   cart.item = newCart;
 
-  const updatedCart = await cart.save();
+  console.log(existsInCart);
 
-  return { data: updatedCart, statusCode: 201 };
+  await cart.save();
+
+  return {
+    data: await getActiveCartForUser({ userId, pop: true }),
+    statusCode: 201,
+  };
 };
-
-// export const checkout = async ({ userId, adress }) => {
-//   if (!adress) {
-//     return { data: "please provide the adress!", statusCode: 400 };
-//   }
-//   const cart = await getActiveCartForUser({ userId });
-
-//   const orderItems = [];
-
-//   //loop cartItems and create orderItems
-//   for (const item of cart.item) {
-//     const product = await productModel.findById(item.product);
-
-//     if (!product) {
-//       return { data: "product not found !", statusCode: 400 };
-//     }
-
-//     const orderItem = {
-//       productTitle: product.title,
-//       productImage: product.image,
-//       quantity: item.quantity,
-//       unitPrice: item.unitPrice,
-//     };
-
-//     orderItems.push(orderItem);
-//   }
-
-//   const order = await orderModel.create({
-//     orderItems,
-//     total: cart.totalAmount,
-//     adress,
-//     userId,
-//   });
-
-//   await order.save();
-
-//   //update cart status
-
-//   cart.status = "completed";
-
-//   await cart.save();
-
-//   return { data: order, statusCode: 201 };
-// };
 
 export const checkout = async ({ userId, adress }) => {
   if (!adress) {
