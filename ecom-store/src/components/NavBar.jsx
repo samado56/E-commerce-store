@@ -13,10 +13,11 @@ import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import { UseAuth } from "../contexts/Auth/AuthCntext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ShoppingCart from "@mui/icons-material/ShoppingCart";
 import Badge, { badgeClasses } from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
+import { useCart } from "../contexts/Cart/CartContext";
 
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
@@ -35,6 +36,7 @@ function NavBar() {
   `;
 
   const { username, isLogedin, logout } = UseAuth();
+  const { cartItems } = useCart();
   const navigate = useNavigate();
 
   console.log("from navbar", { username, isLogedin });
@@ -75,7 +77,9 @@ function NavBar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          <Link to="/">
+            <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
+          </Link>
 
           <Typography
             variant="h6"
@@ -130,7 +134,10 @@ function NavBar() {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          <Link to="/">
+            <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
+          </Link>
+
           <Typography
             variant="h5"
             noWrap
@@ -164,7 +171,7 @@ function NavBar() {
             <ShoppingCart fontSize="small" sx={{ color: "white" }} />
             <CartBadge
               sx={{ color: "white" }}
-              badgeContent={2}
+              badgeContent={cartItems.length > 0 ? cartItems.length : 0}
               // color="primary"
               overlap="circular"
             />
