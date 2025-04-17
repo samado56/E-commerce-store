@@ -13,6 +13,7 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { useCart } from "../contexts/Cart/CartContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function Cart() {
   const {
@@ -39,6 +40,8 @@ export default function Cart() {
   const handleClearCart = () => {
     clearCart();
   };
+
+  const navigate = useNavigate();
 
   if (loader) {
     return <h1>Loading...</h1>;
@@ -180,12 +183,30 @@ export default function Cart() {
         ) : (
           <h1>No Items to show</h1>
         )}
-        <Typography
-          variant="h4"
-          sx={{ alignSelf: "center", justifySelf: "center", mb: 2 }}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mx: 6,
+            my: 2,
+            mb: 2,
+            // backgroundColor: "gold",
+          }}
         >
-          Total : {Math.round(totalAmount).toFixed(2)} $
-        </Typography>
+          <Typography variant="h4">
+            Total : {Math.round(totalAmount).toFixed(2)} $
+          </Typography>
+          <Button
+            onClick={() => {
+              navigate("/checkout");
+            }}
+            size="large"
+            sx={{ fontWeight: "bold" }}
+          >
+            Checkout
+          </Button>
+        </Box>
       </List>
     </>
   );
