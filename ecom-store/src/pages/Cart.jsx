@@ -15,8 +15,28 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useCart } from "../contexts/Cart/CartContext";
 
 export default function Cart() {
-  const { loader, cartItems, totalAmount } = useCart();
+  const {
+    loader,
+    cartItems,
+    totalAmount,
+    updateItemInCart,
+    deleteItemFromCart,
+  } = useCart();
   console.log("######## totalAmount ########", totalAmount);
+
+  const handleMinus = (productId, quantity) => {
+    const minus = quantity - 1;
+    updateItemInCart(productId, minus);
+  };
+
+  const handlePlus = (productId, quantity) => {
+    const plus = quantity + 1;
+    updateItemInCart(productId, plus);
+  };
+
+  const handleDeleteItem = (productId) => {
+    deleteItemFromCart(productId);
+  };
 
   if (loader) {
     return <h1>Loading...</h1>;
@@ -96,7 +116,13 @@ export default function Cart() {
                         variant="outlined"
                         aria-label="Basic button group"
                       >
-                        <Button>-</Button>
+                        <Button
+                          onClick={() =>
+                            handleMinus(item.product._id, item.quantity)
+                          }
+                        >
+                          -
+                        </Button>
 
                         <Typography
                           component="span"
@@ -110,7 +136,13 @@ export default function Cart() {
                           {item.quantity}
                         </Typography>
 
-                        <Button>+</Button>
+                        <Button
+                          onClick={() =>
+                            handlePlus(item.product._id, item.quantity)
+                          }
+                        >
+                          +
+                        </Button>
                       </ButtonGroup>
                     </Box>
                     <Box sx={{ width: "20%" }}>
@@ -119,7 +151,13 @@ export default function Cart() {
                         spacing={1}
                         sx={{ alignItems: "center" }}
                       >
-                        <IconButton aria-label="delete" size="large">
+                        <IconButton
+                          onClick={() => {
+                            handleDeleteItem(item.product._id);
+                          }}
+                          aria-label="delete"
+                          size="large"
+                        >
                           <DeleteIcon fontSize="inherit" color="error" />
                         </IconButton>
                       </Stack>

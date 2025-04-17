@@ -27,6 +27,26 @@ export const getActiveCartForUser = async ({ userId, pop }) => {
   return cart;
 };
 
+const calculatTotalItems = ({ cart }) => {
+  let total = cart.item.reduce((sum, product) => {
+    sum += product.quantity * product.unitPrice;
+    return sum;
+  }, 0);
+
+  return total;
+};
+
+//clear cart
+
+export const clearCart = async ({ userId }) => {
+  const cart = await getActiveCartForUser({ userId });
+  cart.item = [];
+  cart.totalAmount = 0;
+
+  const clearedCart = await cart.save();
+  return { data: clearedCart, statusCode: 200 };
+};
+
 export const addItemToCart = async ({ userId, productId, quantity }) => {
   const cart = await getActiveCartForUser({ userId });
 
@@ -96,9 +116,12 @@ export const updateItems = async ({ userId, productId, quantity }) => {
 
   cart.totalAmount = total;
 
-  const updatedCart = await cart.save();
+  await cart.save();
 
-  return { data: updatedCart, statusCode: 201 };
+  return {
+    data: await getActiveCartForUser({ userId, pop: true }),
+    statusCode: 201,
+  };
 };
 
 export const deleteItemFromCart = async ({ userId, id }) => {
@@ -126,26 +149,6 @@ export const deleteItemFromCart = async ({ userId, id }) => {
   const updatedCart = await cart.save();
 
   return { data: updatedCart, statusCode: 201 };
-};
-
-const calculatTotalItems = ({ cart }) => {
-  let total = cart.item.reduce((sum, product) => {
-    sum += product.quantity * product.unitPrice;
-    return sum;
-  }, 0);
-
-  return total;
-};
-
-//clear cart
-
-export const clearCart = async ({ userId }) => {
-  const cart = await getActiveCartForUser({ userId });
-  cart.item = [];
-  cart.totalAmount = 0;
-
-  const clearedCart = await cart.save();
-  return { data: clearedCart, statusCode: 200 };
 };
 
 // export const checkout = async ({ userId, adress }) => {

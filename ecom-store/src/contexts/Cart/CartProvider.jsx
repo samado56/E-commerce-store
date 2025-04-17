@@ -6,7 +6,6 @@ const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState();
   const [loader, setLoader] = useState(false);
-
   const { error, setError } = useState("");
 
   const { token } = UseAuth();
@@ -55,13 +54,14 @@ const CartProvider = ({ children }) => {
         },
         body: JSON.stringify({
           productId,
-          quantity: 2,
+          quantity: 1,
         }),
       });
 
       const items = await res.json();
 
       if (res.ok) {
+        console.log(items);
         setCartItems([...items.item]);
         setTotalAmount(items.totalAmount);
       }
@@ -72,9 +72,70 @@ const CartProvider = ({ children }) => {
     }
   };
 
+  //update item in the cart
+  const updateItemInCart = async (productId, quantity) => {
+    try {
+      const url = "http://localhost:5000/cart/items";
+
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "Application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productId,
+          quantity,
+        }),
+      });
+
+      const updatedCart = await res.json();
+
+      if (res.ok) {
+        setCartItems([...updatedCart.item]);
+        setTotalAmount(updatedCart.totalAmount);
+      }
+    } catch (err) {
+      console.log(err);
+      setError("Failed to update item");
+    }
+  };
+
+  //Dlete item in the cart
+  const deleteItemFromCart = async (productId) => {
+    try {
+      const url = `http://localhost:5000/cart/items/${productId}`;
+
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "Application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const deleteItem = await res.json();
+
+      if (res.ok) {
+        setCartItems([...deleteItem.item]);
+        setTotalAmount(deleteItem.totalAmount);
+      }
+    } catch (err) {
+      console.log(err);
+      setError("Failed to delete item");
+    }
+  };
   return (
     <CartContext.Provider
-      value={{ cartItems, totalAmount, error, loader, addItemToCart }}
+      value={{
+        cartItems,
+        totalAmount,
+        error,
+        loader,
+        addItemToCart,
+        updateItemInCart,
+        deleteItemFromCart,
+      }}
     >
       {children}
     </CartContext.Provider>
