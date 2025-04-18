@@ -5,22 +5,46 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
 import TextField from "@mui/material/TextField";
-
-import { useCart } from "../contexts/Cart/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { UseAuth } from "../contexts/Auth/AuthCntext";
+import { useCart } from "../contexts/Cart/CartContext";
 
 export default function Checkout() {
   const { loader, cartItems, totalAmount } = useCart();
   const [adress, setAdress] = useState();
 
+  const { token } = UseAuth();
   const navigate = useNavigate();
+
+  const handleConfirmOrder = async () => {
+    if (!adress) return;
+
+    try {
+      const url = "http://localhost:5000/cart/checkout";
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          adress,
+        }),
+      });
+
+      const order = await res.json();
+
+      if (res.ok) {
+        console.log(order);
+        navigate("/order-succes");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   if (loader) {
     return <h1>Loading...</h1>;
@@ -161,9 +185,6 @@ export default function Checkout() {
               label="Copon Code"
             />
             <Button
-              onClick={() => {
-                navigate("/checkout");
-              }}
               size="large"
               sx={{ fontWeight: "bold", px: 4, py: 2 }}
               variant="outlined"
@@ -187,9 +208,7 @@ export default function Checkout() {
               Total : {Math.round(totalAmount).toFixed(2)} $
             </Typography>
             <Button
-              onClick={() => {
-                navigate("/checkout");
-              }}
+              onClick={handleConfirmOrder}
               size="large"
               sx={{ fontWeight: "bold" }}
               variant="contained"

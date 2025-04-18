@@ -203,6 +203,7 @@ export default function Cart() {
             }}
             size="large"
             sx={{ fontWeight: "bold" }}
+            variant="contained"
           >
             Checkout
           </Button>
